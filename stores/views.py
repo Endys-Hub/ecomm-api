@@ -285,7 +285,26 @@ class PaymentView(APIView):
 
 # Verify
 class VerifyView(APIView):
-    pass 
+    def get(self,request,ref):
+        try:
+            order = get_object_or_404(Order, ref=ref)
+            url = f"https://api.paystack.co/transaction/verify/{ref}"
+            headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
+            response = requests.get(url,headers=headers)
+            response_data = response.json()
+
+            if response_data['status'] and response_data['data']['status'] == "success":
+                order.payment_completed = True
+                order.order_status = "complete"
+                order.save()
+                return Response({"Message":"Payment was verified successfully"}, status = status.HTTP_200_OK)
+            elif response_data['data']['status'] == "abandoned":
+                order.payment_completed = False
+                order.order_status = "pending"
+                order.save()
+                return Response({"Message":"Payment verification abandoned"}, status = status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Error":str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 '''
 class PaymentView(APIView):

@@ -121,9 +121,30 @@ def verify_payment(self):
 
     if status and result.get('status') == 'success':
         # Ensuring amount tallies
+        if result['amount'] / 100 == self.amount:
+            self.payment_completed = True                                                         #if self.cart:
+            self.save()
+            return True     
+        if self.payment_completed == True:
+            del self.cart
+            self.save()
+            return True    
+        return False
+'''
+def verify_payment(self):
+    paystack = Paystack()
+    status, result = paystack.verify_payment(self.ref)
+
+    if status and result.get('status') == 'success':
+        # Ensuring amount tallies
         if result['amount']/ 100 == self.amount:
             self.payment_completed = True
-            self.cart.delete()
+            del self.cart
             self.save()
             return True
+        if self.payment_completed == True:
+            del self.cart
+            self.save()
+            return True    
         return False
+'''        

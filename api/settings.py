@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,8 +127,8 @@ EMAIL_HOST_USER = str(os.getenv('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_HOST_PASSWORD'))
 '''
 # PAYSTACK
-PAYSTACK_SECRET_KEY = str(os.getenv('PAYSTACK_SECRET_KEY'))
-PAYSTACK_PUBLIC_KEY = str(os.getenv('PAYSTACK_PUBLIC_KEY'))
+PAYSTACK_SECRET_KEY = config("PAYSTACK_SECRET_KEY") # str(os.getenv("PAYSTACK_SECRET_KEY"))
+PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY") # str(os.getenv("PAYSTACK_PUBLIC_KEY"))
 
 
 # Default primary key field type
